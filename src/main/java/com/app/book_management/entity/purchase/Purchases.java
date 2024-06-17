@@ -1,5 +1,7 @@
-package com.app.book_management.entity;
+package com.app.book_management.entity.purchase;
 
+import com.app.book_management.entity.book.Book;
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -13,10 +15,19 @@ import java.util.UUID;
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder
+@Entity
+@Table(name = "purchases")
 public class Purchases {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     UUID id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "book_id")
     Book book;
+    @Column(name = "purchase_date")
     LocalDate purchaseDate;
+    @Column(name = "buyer_name", nullable = false)
     String buyerName;
 
     @Override
