@@ -1,0 +1,225 @@
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="1" author="Aleksandr Borisov">
+        <sql>
+            CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+        </sql>
+    </changeSet>
+
+    <changeSet id="2" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="authors"/>
+            </not>
+        </preConditions>
+        <createTable tableName="authors">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="birthdate" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="country" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="3" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="genres"/>
+            </not>
+        </preConditions>
+        <createTable tableName="genres">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="4" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="books"/>
+            </not>
+        </preConditions>
+        <createTable tableName="books">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="title" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="author_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_books_author" references="authors(id)"/>
+            </column>
+            <column name="genre_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_books_genre" references="genres(id)"/>
+            </column>
+            <column name="published_date" type="DATE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="isbn" type="VARCHAR"/>
+            <column name="price" type="NUMERIC">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="5" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="reviews"/>
+            </not>
+        </preConditions>
+        <createTable tableName="reviews">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="book_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_reviews_book" references="books(id)"/>
+            </column>
+            <column name="reviewer_name" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="rating" type="INTEGER">
+                <constraints nullable="false"/>
+            </column>
+            <column name="review_text" type="VARCHAR"/>
+            <column name="review_date" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="6" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_reviews_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="reviews"
+                                 baseColumnNames="book_id"
+                                 constraintName="fk_reviews_book"
+                                 referencedTableName="books"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+        <sql>
+            ALTER TABLE reviews ADD CONSTRAINT check_rating CHECK (rating &gt;= 1 AND rating &lt;= 10);
+        </sql>
+    </changeSet>
+
+    <changeSet id="7" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <tableExists tableName="purchases"/>
+            </not>
+        </preConditions>
+        <createTable tableName="purchases">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="book_id" type="UUID">
+                <constraints nullable="false" foreignKeyName="fk_purchases_book" references="books(id)"/>
+            </column>
+            <column name="purchase_date" type="DATE"/>
+            <column name="buyer_name" type="VARCHAR">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="8" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <foreignKeyConstraintExists foreignKeyName="fk_purchases_book"/>
+            </not>
+        </preConditions>
+        <addForeignKeyConstraint baseTableName="purchases"
+                                 baseColumnNames="book_id"
+                                 constraintName="fk_purchases_book"
+                                 referencedTableName="books"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="9" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <indexExists indexName="idx_books_author_id" tableName="books"/>
+                <indexExists indexName="idx_books_genre_id" tableName="books"/>
+                <indexExists indexName="idx_books_title" tableName="books"/>
+                <indexExists indexName="idx_reviews_rating" tableName="reviews"/>
+            </not>
+        </preConditions>
+        <createIndex indexName="idx_books_author_id" tableName="books">
+            <column name="author_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_books_genre_id" tableName="books">
+            <column name="genre_id"/>
+        </createIndex>
+
+        <createIndex indexName="idx_books_title" tableName="books">
+            <column name="title"/>
+        </createIndex>
+
+        <createIndex indexName="idx_reviews_rating" tableName="reviews">
+            <column name="rating"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="10" author="Aleksandr Borisov">
+        <preConditions onFail="CONTINUE">
+            <not>
+                <viewExists viewName="author_statistics"/>
+                <viewExists viewName="genre_statistics"/>
+                <viewExists viewName="sales_statistics"/>
+            </not>
+        </preConditions>
+        <createView viewName="author_statistics" replaceIfExists="true">
+            SELECT
+            a.id AS author_id,
+            a.name AS author_name,
+            COUNT(b.id) AS book_count,
+            AVG(r.rating) AS average_rating
+            FROM authors a
+            JOIN books b ON a.id = b.author_id
+            LEFT JOIN reviews r ON b.id = r.book_id
+            GROUP BY a.id, a.name;
+        </createView>
+
+        <createView viewName="genre_statistics" replaceIfExists="true">
+            SELECT
+            g.id AS genre_id,
+            g.name AS genre_name,
+            COUNT(b.id) AS book_count,
+            AVG(r.rating) AS average_rating
+            FROM genres g
+            JOIN books b ON g.id = b.genre_id
+            LEFT JOIN reviews r ON b.id = r.book_id
+            GROUP BY g.id, g.name;
+        </createView>
+
+        <createView viewName="sales_statistics" replaceIfExists="true">
+            SELECT
+            a.id AS author_id,
+            a.name AS author_name,
+            SUM(b.price) AS total_sales
+            FROM authors a
+            JOIN books b ON a.id = b.author_id
+            JOIN purchases p ON b.id = p.book_id
+            GROUP BY a.id, a.name;
+        </createView>
+    </changeSet>
+</databaseChangeLog>
