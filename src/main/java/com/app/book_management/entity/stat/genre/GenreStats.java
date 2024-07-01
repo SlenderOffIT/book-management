@@ -1,6 +1,7 @@
-package com.app.book_management.entity.genre;
+package com.app.book_management.entity.stat.genre;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @Table(name = "genre_statistics", schema = "public")
 public class GenreStats {
 
@@ -39,6 +41,4 @@ public class GenreStats {
         }
         this.avgRating = avgRating;
     }
-
-
 }

@@ -2,19 +2,15 @@ package com.app.book_management.service.author;
 
 import com.app.book_management.entity.author.Author;
 import com.app.book_management.entity.author.AuthorJson;
-import com.app.book_management.entity.author.AuthorSaleStats;
-import com.app.book_management.entity.author.AuthorStats;
 import com.app.book_management.entity.author.AuthorUpdateJson;
 import com.app.book_management.exception.AuthorBadRequestException;
 import com.app.book_management.exception.AuthorNotFoundException;
 import com.app.book_management.repository.author.AuthorRepository;
 import com.app.book_management.repository.book.BookRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.UUID;
 
 import static com.app.book_management.entity.author.AuthorMapping.toAuthor;

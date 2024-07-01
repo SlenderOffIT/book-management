@@ -1,6 +1,6 @@
 package com.app.book_management.repository.author;
 
-import com.app.book_management.entity.author.AuthorSaleStats;
+import com.app.book_management.entity.stat.author.AuthorSaleStats;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

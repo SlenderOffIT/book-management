@@ -1,11 +1,8 @@
 package com.app.book_management.service.genre;
 
-import com.app.book_management.entity.book.Book;
 import com.app.book_management.entity.genre.Genre;
 import com.app.book_management.entity.genre.GenreJson;
 import com.app.book_management.entity.genre.GenreMapper;
-import com.app.book_management.entity.genre.GenreStats;
-import com.app.book_management.exception.GenreBadRequestException;
 import com.app.book_management.exception.GenreNotFoundException;
 import com.app.book_management.repository.book.BookRepository;
 import com.app.book_management.repository.genre.GenreRepository;

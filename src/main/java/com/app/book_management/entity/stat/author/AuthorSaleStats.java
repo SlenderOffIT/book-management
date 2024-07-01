@@ -1,6 +1,7 @@
-package com.app.book_management.entity.author;
+package com.app.book_management.entity.stat.author;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -17,8 +18,9 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "author_statistics", schema = "public")
-public class AuthorStats {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@Table(name = "sales_statistics", schema = "public")
+public class AuthorSaleStats {
 
     @Id
     @JsonIgnore
@@ -26,10 +28,6 @@ public class AuthorStats {
     UUID authorId;
     @Column(name = "author_name")
     String authorName;
-    @Column(name = "book_count")
-    Long bookCount;
-    @Column(name = "average_rating")
-    Double averageRating;
-
+    @Column(name = "total_sales")
+    double sumSale;
 }
-//TODO сценарий 3
