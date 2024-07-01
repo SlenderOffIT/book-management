@@ -107,3 +107,22 @@
 - author_statistics - получение статистики по авторам;
 - genre_statistics - получение статистики по жанрам;
 - sales_statistics - получение статистики по продажам.
+- POST /v1/stats/prefabricated - составной запрос к представлениям статистики.  
+Вариации запросов:
+```json
+{
+     "selectFields": ["genre_name", "book_count", "average_rating"],
+     "fromView": "genre_statistics"
+}
+```
+```json
+{
+  "selectFields": ["author_name", "average_rating"],
+  "fromView": "author_statistics",
+  "whereConditions": {
+    "book_count": "2"
+  },
+  "limit": 10,
+  "offset": 0
+}
+```
